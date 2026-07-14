@@ -1,0 +1,7 @@
+Package: com.ufatm.vcam
+Version: 1.0.1
+Architecture: iphoneos-arm64
+Name: UFATM Virtual Camera Daemon
+Description: A sample package
+
+MD5-sum: 3a462e1281b3d48fd6a257bafe77ddbd
