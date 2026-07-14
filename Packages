@@ -1,0 +1,8 @@
+Package: com.ufatm.vcam
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Maintainer: UFATM Developer
+Filename: debs/com.ufatm.vcam_1.0.0_iphoneos-arm64.deb
+Size: 15200
+Description: Daemon hỗ trợ camera ảo cho iOS Rootless
+Name: UFATM Virtual Camera Daemon
