@@ -22,36 +22,6 @@ def cv2_to_pil(cv2_image):
     return Image.fromarray(cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB))
 
 
-def extract_image_mask(editor_value):
-    """
-    Convert Gradio 4.x ImageEditor value into (image, mask).
-    ImageEditor value is a dict: {background: PIL.Image, layers: [PIL.Image, ...]}
-    """
-    if editor_value is None:
-        return None, None
-
-    background = editor_value.get("background")
-    layers = editor_value.get("layers", [])
-
-    if background is None:
-        return None, None
-
-    if not layers:
-        return background, None
-
-    # Combine all layers into a single grayscale mask
-    mask_array = None
-    for layer in layers:
-        layer_array = np.array(layer.convert("L"))
-        if mask_array is None:
-            mask_array = layer_array
-        else:
-            mask_array = np.maximum(mask_array, layer_array)
-
-    mask = Image.fromarray(mask_array)
-    return background, mask
-
-
 def ensure_binary_mask(mask_pil, target_size=None):
     mask_np = np.array(mask_pil.convert("L"))
     if target_size is not None and (mask_np.shape[1], mask_np.shape[0]) != target_size:
@@ -163,8 +133,12 @@ def inpaint_openai(image_pil, mask_pil, api_key, prompt=""):
     return result_image, "OpenAI inpainting complete."
 
 
-def inpaint_image(editor_value, backend, algorithm, radius, api_key, prompt):
-    image, mask = extract_image_mask(editor_value)
+def inpaint_image(image_and_mask, backend, algorithm, radius, api_key, prompt):
+    if image_and_mask is None or "image" not in image_and_mask:
+        return None, "Please upload an image and draw a mask."
+
+    image = image_and_mask["image"]
+    mask = image_and_mask["mask"]
 
     if image is None:
         return None, "Please upload an image."
@@ -241,11 +215,16 @@ def inpaint_video_e2fgvi(video_path, mask_pil):
     return None, "E2FGVI backend placeholder - not yet implemented."
 
 
-def inpaint_video(video_path, editor_value, backend, algorithm, radius):
+def inpaint_video(video_path, image_and_mask, backend, algorithm, radius):
     if video_path is None:
         return None, "Please upload a video."
 
-    image, mask = extract_image_mask(editor_value)
+    if image_and_mask is None or "image" not in image_and_mask:
+        return None, "Please upload a reference frame and draw a mask."
+
+    image = image_and_mask["image"]
+    mask = image_and_mask["mask"]
+
     if image is None:
         return None, "Please upload a reference frame."
     if mask is None:
@@ -277,17 +256,18 @@ with gr.Blocks(title="AI Media Inpainting") as demo:
     with gr.Tab("Image Inpainting"):
         with gr.Row():
             with gr.Column():
-                img_input = gr.ImageEditor(
+                img_input = gr.Image(
                     label="Upload image & draw mask",
                     type="pil",
-                    interactive=True,
+                    tool="sketch",
+                    brush_color="#FF0000",
                 )
                 backend_img = gr.Radio(
                     choices=["OpenCV", "LaMa", "Stability AI", "OpenAI"],
                     value="OpenCV",
                     label="Backend",
                 )
-                with gr.Row(visible=True) as opencv_row_img:
+                with gr.Row() as opencv_row_img:
                     algo_img = gr.Radio(
                         choices=["Telea", "Navier-Stokes"],
                         value="Telea",
@@ -343,17 +323,18 @@ with gr.Blocks(title="AI Media Inpainting") as demo:
         with gr.Row():
             with gr.Column():
                 video_input = gr.Video(label="Upload video")
-                mask_ref = gr.ImageEditor(
+                mask_ref = gr.Image(
                     label="Upload reference frame & draw mask",
                     type="pil",
-                    interactive=True,
+                    tool="sketch",
+                    brush_color="#FF0000",
                 )
                 backend_vid = gr.Radio(
                     choices=["OpenCV", "E2FGVI"],
                     value="OpenCV",
                     label="Backend",
                 )
-                with gr.Row(visible=True) as opencv_row_vid:
+                with gr.Row() as opencv_row_vid:
                     algo_vid = gr.Radio(
                         choices=["Telea", "Navier-Stokes"],
                         value="Telea",

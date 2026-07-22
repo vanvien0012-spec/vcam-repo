@@ -18,8 +18,6 @@ Hỗ trợ nhiều backend cho ảnh và video, từ thuật toán đơn giản 
 
 ## Cài đặt
 
-### Bắt buộc
-
 ```bash
 cd media-inpainting
 python -m venv venv
@@ -33,19 +31,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Tùy chọn
-
-Cài thêm backend tùy nhu cầu:
-
-```bash
-# LaMa (chạy local, chất lượng cao)
-pip install simple-lama-inpainting
-
-# OpenAI API
-pip install openai
-
-# E2FGVI (nâng cao, xem hướng dẫn riêng)
-```
+**Lưu ý:** `requirements.txt` đã ghim các phiên bản dependency để tránh xung đột với Gradio 3.50.2.
 
 ## Chạy ứng dụng
 
