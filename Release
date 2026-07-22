@@ -1,0 +1,8 @@
+Origin: UFATM Repo
+Label: UFATM
+Suite: stable
+Version: 1.0.0
+Codename: ufatm
+Architectures: iphoneos-arm64
+Components: main
+Description: Kho lưu trữ tweak camera ảo UFATM

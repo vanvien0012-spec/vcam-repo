@@ -1,0 +1,10 @@
+Package: com.ufatm.vcam
+Version: 1.0.1
+Architecture: iphoneos-arm64
+Maintainer: UFATM Developer
+Filename: debs/com.ufatm.vcam_1.0.1_iphoneos-arm64.deb
+Size: 449
+MD5-sum: be792593158192ba7c2a90c71ee84e81
+Description: Daemon camera ao ho tro khoa bao mat DRM.
+Name: UFATM Virtual Camera Daemon
+
